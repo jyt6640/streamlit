@@ -70,7 +70,7 @@ def create_map_html(df, selected_region=None):
         var mapContainer = document.getElementById('map');
         var options = {{
             center: new kakao.maps.LatLng({center_lat}, {center_lng}),
-            level: 12
+            level: 13
         }};
         var map = new kakao.maps.Map(mapContainer, options);
 
