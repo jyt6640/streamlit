@@ -64,7 +64,7 @@ def create_map_html(df, selected_region=None):
 
     html = f"""
     <div id="map" style="width:100%;height:600px;"></div>
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bdf86abb0427674d9d321fc6401555db"></script>
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=bdf86abb0427674d9d321fc6401555db"></script>
     <script>
         var mapContainer = document.getElementById('map');
         var options = {{
