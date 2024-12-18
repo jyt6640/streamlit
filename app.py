@@ -78,7 +78,7 @@ def create_map_html(df, selected_region=None):
         polygons.forEach(function(data) {{
             var circle = new kakao.maps.Circle({{
                 center: new kakao.maps.LatLng(data.lat, data.lng),
-                radius: 30000,
+                radius: 15000,
                 strokeWeight: 2,
                 strokeColor: data.color,
                 strokeOpacity: 0.8,
