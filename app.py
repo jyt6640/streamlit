@@ -64,63 +64,52 @@ def create_map_html(df, selected_region=None):
 
     html = f"""
     <div id="map" style="width:100%;height:600px;"></div>
-    <script type="text/javascript">
-    // 카카오맵 API를 로드하고 나서 실행
-    var script = document.createElement('script');
-    script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=bdf86abb0427674d9d321fc6401555db&autoload=false";
-    script.onload = function() {
-        kakao.maps.load(function() {
-            // 카카오맵이 로드된 후에 실행할 코드
-            var mapContainer = document.getElementById('map');
-            var options = {
-                center: new kakao.maps.LatLng(37.5665, 126.9780),  // 서울의 위도와 경도
-                level: 7  // 지도 확대 레벨
-            };
-            var map = new kakao.maps.Map(mapContainer, options);
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=bdf86abb0427674d9d321fc6401555db"></script>
+    <script>
+        var mapContainer = document.getElementById('map');
+        var options = {{
+            center: new kakao.maps.LatLng({center_lat}, {center_lng}),
+            level: 12
+        }};
+        var map = new kakao.maps.Map(mapContainer, options);
 
-            // polygons_data를 JSON 형태로 변환하여 JavaScript에서 사용
-            var polygons = {{ polygons_data | tojson }};
-            
-            polygons.forEach(function(data) {
-                var circle = new kakao.maps.Circle({
-                    center: new kakao.maps.LatLng(data.lat, data.lng),
-                    radius: 30000,
-                    strokeWeight: 2,
-                    strokeColor: data.color,
-                    strokeOpacity: 0.8,
-                    strokeStyle: 'solid',
-                    fillColor: data.color,
-                    fillOpacity: data.opacity
-                });
+        // 'polygons_data'는 Python에서 JSON 형태로 변환되어 삽입됩니다.
+        var polygons = {json.dumps(polygons_data)};
+        polygons.forEach(function(data) {{
+            var circle = new kakao.maps.Circle({{
+                center: new kakao.maps.LatLng(data.lat, data.lng),
+                radius: 30000,
+                strokeWeight: 2,
+                strokeColor: data.color,
+                strokeOpacity: 0.8,
+                strokeStyle: 'solid',
+                fillColor: data.color,
+                fillOpacity: data.opacity
+            }});
 
-                var content = '<div style="padding:15px;background:rgba(45,45,45,0.9);color:white;border-radius:10px;min-width:200px;box-shadow:0 4px 6px rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2)">' +
-                              '<h3 style="color:#00ff88;margin:0 0 10px 0;">' + data.region + '</h3>' +
-                              '<div style="margin:5px 0;"><span style="color:#aaa;">미세먼지(PM10):</span> <span style="color:white;font-weight:bold;">' + data.pm10 + ' µg/m³</span></div>' +
-                              '<div style="margin:5px 0;"><span style="color:#aaa;">초미세먼지(PM2.5):</span> <span style="color:white;font-weight:bold;">' + data.pm25 + ' µg/m³</span></div>' +
-                              '</div>';
+            var content = '<div style="padding:15px;background:rgba(45,45,45,0.9);color:white;border-radius:10px;min-width:200px;box-shadow:0 4px 6px rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2)">' +
+                          '<h3 style="color:#00ff88;margin:0 0 10px 0;">' + data.region + '</h3>' +
+                          '<div style="margin:5px 0;"><span style="color:#aaa;">미세먼지(PM10):</span> <span style="color:white;font-weight:bold;">' + data.pm10 + ' µg/m³</span></div>' +
+                          '<div style="margin:5px 0;"><span style="color:#aaa;">초미세먼지(PM2.5):</span> <span style="color:white;font-weight:bold;">' + data.pm25 + ' µg/m³</span></div>' +
+                          '</div>';
 
-                var overlay = new kakao.maps.CustomOverlay({
-                    content: content,
-                    position: new kakao.maps.LatLng(data.lat, data.lng),
-                    yAnchor: 1.5,
-                    zIndex: 3
-                });
-
-                kakao.maps.event.addListener(circle, 'click', function() {
-                    overlay.setMap(map);
-                    setTimeout(function() {
-                        overlay.setMap(null);
-                    }, 3000);
-                });
-
-                circle.setMap(map);
+            var overlay = new kakao.maps.CustomOverlay({
+                content: content,
+                position: new kakao.maps.LatLng(data.lat, data.lng),
+                yAnchor: 1.5,
+                zIndex: 3
             });
-        });
-    };
-    document.head.appendChild(script);
-</script>
 
+            kakao.maps.event.addListener(circle, 'click', function() {{
+                overlay.setMap(map);
+                setTimeout(function() {{
+                    overlay.setMap(null);
+                }}, 3000);
+            }});
 
+            circle.setMap(map);
+        }});
+    </script>
     """
     return html
 
@@ -164,7 +153,7 @@ with col2:
         st.info("ℹ️ 보통: 평소와 같은 실외 활동이 가능합니다.")
     else:
         st.success("✅ 좋음: 대기질이 좋습니다!")
-        
+
 st.subheader("🏥 건강 정보")
 if current_pm10 > 150:
     st.markdown("""
