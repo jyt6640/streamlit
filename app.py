@@ -73,8 +73,7 @@ def create_map_html(df, selected_region=None):
         }};
         var map = new kakao.maps.Map(mapContainer, options);
 
-        // 'polygons_data'는 Python에서 JSON 형태로 변환되어 삽입됩니다.
-        var polygons = {json.dumps(polygons_data)};
+        var polygons = {str(polygons_data)};
         polygons.forEach(function(data) {{
             var circle = new kakao.maps.Circle({{
                 center: new kakao.maps.LatLng(data.lat, data.lng),
@@ -86,27 +85,27 @@ def create_map_html(df, selected_region=None):
                 fillColor: data.color,
                 fillOpacity: data.opacity
             }});
-
+            
             var content = '<div style="padding:15px;background:rgba(45,45,45,0.9);color:white;border-radius:10px;min-width:200px;box-shadow:0 4px 6px rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2)">' +
                           '<h3 style="color:#00ff88;margin:0 0 10px 0;">' + data.region + '</h3>' +
                           '<div style="margin:5px 0;"><span style="color:#aaa;">미세먼지(PM10):</span> <span style="color:white;font-weight:bold;">' + data.pm10 + ' µg/m³</span></div>' +
                           '<div style="margin:5px 0;"><span style="color:#aaa;">초미세먼지(PM2.5):</span> <span style="color:white;font-weight:bold;">' + data.pm25 + ' µg/m³</span></div>' +
                           '</div>';
-
-            var overlay = new kakao.maps.CustomOverlay({
+            
+            var overlay = new kakao.maps.CustomOverlay({{
                 content: content,
                 position: new kakao.maps.LatLng(data.lat, data.lng),
                 yAnchor: 1.5,
                 zIndex: 3
-            });
-
+            }});
+            
             kakao.maps.event.addListener(circle, 'click', function() {{
                 overlay.setMap(map);
                 setTimeout(function() {{
                     overlay.setMap(null);
                 }}, 3000);
             }});
-
+            
             circle.setMap(map);
         }});
     </script>
@@ -153,7 +152,7 @@ with col2:
         st.info("ℹ️ 보통: 평소와 같은 실외 활동이 가능합니다.")
     else:
         st.success("✅ 좋음: 대기질이 좋습니다!")
-
+        
 st.subheader("🏥 건강 정보")
 if current_pm10 > 150:
     st.markdown("""
