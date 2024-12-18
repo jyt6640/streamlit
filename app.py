@@ -64,7 +64,6 @@ def create_map_html(df, selected_region=None):
 
     html = f"""
     <div id="map" style="width:100%;height:600px;"></div>
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=bdf86abb0427674d9d321fc6401555db"></script>
     <script type="text/javascript">
     // 카카오맵 API를 로드하고 나서 실행
     var script = document.createElement('script');
@@ -79,7 +78,9 @@ def create_map_html(df, selected_region=None):
             };
             var map = new kakao.maps.Map(mapContainer, options);
 
-            var polygons = {str(polygons_data)};
+            // polygons_data를 JSON 형태로 변환하여 JavaScript에서 사용
+            var polygons = {{ polygons_data | tojson }};
+            
             polygons.forEach(function(data) {
                 var circle = new kakao.maps.Circle({
                     center: new kakao.maps.LatLng(data.lat, data.lng),
@@ -118,6 +119,7 @@ def create_map_html(df, selected_region=None):
     };
     document.head.appendChild(script);
 </script>
+
 
     """
     return html
